@@ -17,6 +17,8 @@ public class Main {
             System.out.println("3. View reservations");
             System.out.println("4. Cancel reservation");
             System.out.println("5. Save & Exit");
+            System.out.println("6. Update reservation");
+            System.out.println("7. Generate report");
             System.out.print("Choose option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -31,6 +33,8 @@ public class Main {
                     System.out.println("Data saved. Goodbye!");
                     return;
                 }
+                case 6 -> updateReservation();
+                case 7 -> generateReport();
                 default -> System.out.println("Invalid option.");
             }
         }
@@ -46,7 +50,11 @@ public class Main {
 
     static void makeReservation() {
         System.out.print("Enter your name: ");
-        String name = scanner.nextLine();
+        String name = scanner.nextLine().trim();
+        if (name.isEmpty()) {
+            System.out.println("Name cannot be empty.");
+            return;
+        }
 
         System.out.print("Enter room number to reserve: ");
         int number = scanner.nextInt();
@@ -76,7 +84,7 @@ public class Main {
 
     static void cancelReservation() {
         System.out.print("Enter your name to cancel: ");
-        String name = scanner.nextLine();
+        String name = scanner.nextLine().trim();
         boolean found = false;
 
         Iterator<Reservation> iterator = reservations.iterator();
@@ -98,6 +106,101 @@ public class Main {
         }
     }
 
+    static void updateReservation() {
+        System.out.print("Enter your name to update reservation: ");
+        String name = scanner.nextLine().trim();
+        Reservation found = null;
+
+        for (Reservation res : reservations) {
+            if (res.name.equalsIgnoreCase(name)) {
+                found = res;
+                break;
+            }
+        }
+
+        if (found == null) {
+            System.out.println("Reservation not found.");
+            return;
+        }
+
+        System.out.println("1. Change name");
+        System.out.println("2. Change room");
+        System.out.print("Choose what to update: ");
+        int option = scanner.nextInt();
+        scanner.nextLine();
+
+        if (option == 1) {
+            System.out.print("Enter new name: ");
+            String newName = scanner.nextLine().trim();
+            if (newName.isEmpty()) {
+                System.out.println("Name cannot be empty.");
+                return;
+            }
+            found.name = newName;
+            System.out.println("Name updated.");
+        } else if (option == 2) {
+            System.out.print("Enter new room number: ");
+            int newRoom = scanner.nextInt();
+            scanner.nextLine();
+
+            Room newRoomObj = null;
+            for (Room room : rooms) {
+                if (room.number == newRoom) {
+                    newRoomObj = room;
+                    break;
+                }
+            }
+
+            if (newRoomObj == null) {
+                System.out.println("Room not found.");
+                return;
+            }
+
+            if (!newRoomObj.isAvailable) {
+                System.out.println("Room is not available.");
+                return;
+            }
+
+
+            for (Room room : rooms) {
+                if (room.number == found.roomNumber) {
+                    room.isAvailable = true;
+                }
+            }
+
+
+            found.roomNumber = newRoom;
+            newRoomObj.isAvailable = false;
+            System.out.println("Room updated.");
+        } else {
+            System.out.println("Invalid option.");
+        }
+    }
+
+    static void generateReport() {
+        System.out.println("\n--- Report ---");
+        System.out.println("Total reservations: " + reservations.size());
+
+        int available = 0;
+        for (Room r : rooms) {
+            if (r.isAvailable) available++;
+        }
+        System.out.println("Available rooms: " + available);
+
+
+        Map<Integer, Integer> counter = new HashMap<>();
+        for (Reservation r : reservations) {
+            counter.put(r.roomNumber, counter.getOrDefault(r.roomNumber, 0) + 1);
+        }
+        if (!counter.isEmpty()) {
+            int mostBookedRoom = Collections.max(counter.entrySet(), Map.Entry.comparingByValue()).getKey();
+            int times = counter.get(mostBookedRoom);
+            System.out.println("Most booked room: " + mostBookedRoom + " (" + times + " times)");
+        } else {
+            System.out.println("No bookings yet.");
+        }
+    }
+
     static void loadRoomsFromFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader("rooms.csv"))) {
             String line;
@@ -110,6 +213,7 @@ public class Main {
                 rooms.add(new Room(number, type, price, isAvailable));
             }
         } catch (IOException e) {
+
             rooms.add(new Room(101, "Single", 2000, true));
             rooms.add(new Room(102, "Double", 3500, true));
             rooms.add(new Room(103, "Suite", 5000, true));
@@ -149,6 +253,7 @@ public class Main {
                 }
             }
         } catch (IOException e) {
+            //nothing
         }
     }
 
