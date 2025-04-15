@@ -44,7 +44,7 @@ The project is about reserving hotel rooms: user can see rooms, book them, cance
    
    Saves all data into rooms.csv and reservations.csv and exits the program.
 
-   there's csv files , program is reading info from those files and when the program is closed again it saves new info there
+   # there's csv files , program is reading info from those files and when the program is closed again it saves new info there
 
    ![image](https://github.com/user-attachments/assets/6532ce3c-5fe6-469d-9520-9a7fc80c342f)
 
