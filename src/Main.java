@@ -30,7 +30,7 @@ public class Main {
                 case 4 -> cancelReservation();
                 case 5 -> {
                     saveReservationsToFile();
-                    System.out.println("Data saved. Goodbye!");
+                    System.out.println("Data saved. Goodbye !");
                     return;
                 }
                 case 6 -> updateReservation();
