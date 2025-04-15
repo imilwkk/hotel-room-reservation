@@ -45,4 +45,7 @@ What's doing each of these functions?
   2. it does not allow empty names
   3. it shows errors if the room number is not found.
 
+  This project helped me better understand how to work with file storage, object-oriented programming
+  subanova milena EEAIR24
+  thanks 
 
